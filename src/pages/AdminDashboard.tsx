@@ -50,14 +50,6 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 }
 
-let voices: SpeechSynthesisVoice[] = [];
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  voices = window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged = () => {
-    voices = window.speechSynthesis.getVoices();
-  };
-}
-
 const speak = (text: string) => {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -65,9 +57,17 @@ const speak = (text: string) => {
     utterance.rate = 0.85;
     utterance.pitch = 1.05;
     
-    const idVoices = voices.filter(v => v.lang.includes('id'));
+    const availableVoices = window.speechSynthesis.getVoices();
+    const idVoices = availableVoices.filter(v => v.lang.includes('id'));
+    
     if (idVoices.length > 0) {
-      const bestVoice = idVoices.find(v => v.name.includes('Google') || v.name.includes('Gadis') || v.name.includes('Female')) || idVoices[0];
+      const bestVoice = idVoices.find(v => 
+        v.name.includes('Google') || 
+        v.name.includes('Gadis') || 
+        v.name.includes('Premium') || 
+        v.name.includes('Female') || 
+        v.name.includes('Natural')
+      ) || idVoices[0];
       utterance.voice = bestVoice;
     }
     
@@ -528,6 +528,11 @@ const AdminDashboard: React.FC = () => {
       end_time: endTime.toISOString(),
       status: 'active'
     });
+
+    // Refresh UI secara instan tanpa perlu memuat ulang halaman
+    fetchPcSessions();
+    fetchTransactions();
+    if (data.withCookies) fetchStocks();
   };
 
   const handleCookieSubmit = async (data: any) => {
@@ -555,6 +560,10 @@ const AdminDashboard: React.FC = () => {
         }
       }
     }
+
+    // Refresh UI secara instan tanpa perlu memuat ulang halaman
+    fetchTransactions();
+    fetchStocks();
   };
 
   const updateStock = async (id: string, delta: number) => {
@@ -591,14 +600,16 @@ const AdminDashboard: React.FC = () => {
       </header>
 
       <main className="admin-main">
-        <section className="action-btns">
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="action-btn game-action" onClick={() => setShowGameModal(true)}>
-            <Gamepad2 size={28} /> Input Transaksi Game
-          </motion.button>
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="action-btn cookie-action" onClick={() => setShowCookieModal(true)}>
-            <Cookie size={28} /> Input Transaksi Cookies
-          </motion.button>
-        </section>
+        <div className="action-btns-container">
+          <section className="action-btns">
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="action-btn game-action" onClick={() => setShowGameModal(true)}>
+              <Gamepad2 size={28} /> Input Transaksi Game
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="action-btn cookie-action" onClick={() => setShowCookieModal(true)}>
+              <Cookie size={28} /> Input Transaksi Cookies
+            </motion.button>
+          </section>
+        </div>
 
         <section className="stats-grid">
           <div className="stat-card">
@@ -618,27 +629,32 @@ const AdminDashboard: React.FC = () => {
         <section className="panel">
           <div className="panel-header"><Monitor size={20} /> <h2>Monitor PC</h2></div>
           <div className="pc-monitor-grid">
-            {pcs.map((pc, i) => (
-              <div key={pc.pcNumber} className={`pc-monitor-card ${pc.status === 'available' ? 'mon-available' : 'mon-occupied'}`}>
-                <div className="mon-header">
-                  <div className={`mon-icon ${pc.status}`}><Monitor size={28} /></div>
-                  <span className="mon-label">PC {pc.pcNumber}</span>
-                  <span className={`mon-status-badge ${pc.status}`}>{pc.status === 'available' ? 'KOSONG' : 'DIPAKAI'}</span>
-                </div>
-                {pc.status === 'occupied' ? (
-                  <div className="mon-body">
-                    <div className="mon-row"><span>Player</span><strong>{pc.customerName}</strong></div>
-                    <div className="mon-countdown">{countdowns[i] || '--:--'}</div>
-                    <div className="mon-actions">
-                      <button className="call-btn" onClick={() => handleManualCall(pc)}><Volume2 size={16} /> Panggil</button>
-                      <button className="finish-btn" onClick={() => handleFinishPc(pc.pcNumber)}><CheckCircle size={16} /> Selesaikan</button>
-                    </div>
+            {pcs.map((pc, i) => {
+              const timeLeftVal = countdowns[i] ? parseInt(countdowns[i].split(':')[0]) * 60 + parseInt(countdowns[i].split(':')[1]) : -1;
+              const isWarning = pc.status === 'occupied' && timeLeftVal <= 60 && timeLeftVal > 0;
+              
+              return (
+                <div key={pc.pcNumber} className={`pc-monitor-card ${pc.status === 'available' ? 'mon-available' : isWarning ? 'mon-warning' : 'mon-occupied'}`}>
+                  <div className="mon-header">
+                    <div className={`mon-icon ${pc.status} ${isWarning ? 'warning' : ''}`}><Monitor size={28} /></div>
+                    <span className="mon-label">PC {pc.pcNumber}</span>
+                    <span className={`mon-status-badge ${pc.status} ${isWarning ? 'warning' : ''}`}>{pc.status === 'available' ? 'KOSONG' : isWarning ? 'WAKTU HABIS' : 'DIPAKAI'}</span>
                   </div>
-                ) : (
-                  <div className="mon-body"><p className="mon-ready">✅ Siap dimainkan!</p></div>
-                )}
-              </div>
-            ))}
+                  {pc.status === 'occupied' ? (
+                    <div className="mon-body">
+                      <div className="mon-row"><span>Player</span><strong>{pc.customerName}</strong></div>
+                      <div className={`mon-countdown ${isWarning ? 'warning' : ''}`}>{countdowns[i] || '--:--'}</div>
+                      <div className="mon-actions">
+                        <button className="call-btn" onClick={() => handleManualCall(pc)}><Volume2 size={16} /> Panggil</button>
+                        <button className="finish-btn" onClick={() => handleFinishPc(pc.pcNumber)}><CheckCircle size={16} /> Selesaikan</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mon-body"><p className="mon-ready">✅ Siap dimainkan!</p></div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 

@@ -16,14 +16,6 @@ function formatCountdown(endTime: Date): string {
   return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }
 
-let voices: SpeechSynthesisVoice[] = [];
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  voices = window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged = () => {
-    voices = window.speechSynthesis.getVoices();
-  };
-}
-
 const speak = (text: string) => {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -31,11 +23,19 @@ const speak = (text: string) => {
     utterance.rate = 0.85; // Kembali ke 0.85 karena intonasinya paling pas
     utterance.pitch = 1.05; // Sedikit lebih tinggi
     
-    // Cari suara bahasa Indonesia terbaik (Google / Microsoft Gadis)
-    const idVoices = voices.filter(v => v.lang.includes('id'));
+    // Cari suara secara langsung (menghindari bug reset saat Hot Reload)
+    const availableVoices = window.speechSynthesis.getVoices();
+    const idVoices = availableVoices.filter(v => v.lang.includes('id'));
+    
     if (idVoices.length > 0) {
-      // Prioritaskan suara perempuan yang formal jika ada
-      const bestVoice = idVoices.find(v => v.name.includes('Google') || v.name.includes('Gadis') || v.name.includes('Female')) || idVoices[0];
+      // Prioritaskan suara perempuan yang formal/natural
+      const bestVoice = idVoices.find(v => 
+        v.name.includes('Google') || 
+        v.name.includes('Gadis') || 
+        v.name.includes('Premium') || 
+        v.name.includes('Female') || 
+        v.name.includes('Natural')
+      ) || idVoices[0];
       utterance.voice = bestVoice;
     }
     
@@ -178,9 +178,18 @@ const PcDashboard: React.FC = () => {
           <Monitor size={28} className="pc-icon" />
           <h1>CLIENT PC {pcNumber || '?'}</h1>
         </div>
-        <button onClick={handleLogout} className="pc-logout-btn">
-          <LogOut size={18} /> Logout
-        </button>
+        <div style={{ display: 'flex', gap: '15px' }}>
+          <button 
+            onClick={() => speak(`Sistem suara untuk PC ${pcNumber} sudah aktif.`)} 
+            className="pc-logout-btn" 
+            style={{ borderColor: 'rgba(0, 255, 204, 0.3)', color: '#00ffcc', background: 'rgba(0, 255, 204, 0.1)' }}
+          >
+            <Monitor size={18} /> Test Suara
+          </button>
+          <button onClick={handleLogout} className="pc-logout-btn">
+            <LogOut size={18} /> Logout
+          </button>
+        </div>
       </header>
 
       <main className="pc-main-content">
