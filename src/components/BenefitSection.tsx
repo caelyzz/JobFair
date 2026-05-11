@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Zap, Shield, Users, Wifi, Headphones } from 'lucide-react';
+import { Star, Zap, Shield, Wifi, Headphones, Gamepad2 } from 'lucide-react';
 import './BenefitSection.css';
 
 const benefits = [
@@ -41,9 +41,6 @@ const benefits = [
     color: 'orange',
   },
 ];
-
-// Need to import Gamepad2 since it's used in the data
-import { Gamepad2 } from 'lucide-react';
 
 const containerVariants = {
   hidden: {},
