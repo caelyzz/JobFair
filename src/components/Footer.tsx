@@ -1,5 +1,4 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
 import './Footer.css';
 
 export const Footer: React.FC = () => {
@@ -16,7 +15,7 @@ export const Footer: React.FC = () => {
 
         <div className="footer-copy">
           <p>
-            Made with <Heart size={14} className="heart-icon" /> by <span className="neon-text">XI RPL</span>
+            Made by Totox Developer
           </p>
           <p className="footer-year">&copy; 2026 R-CADE. All rights reserved.</p>
         </div>

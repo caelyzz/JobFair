@@ -1,0 +1,316 @@
+/* ============================================
+   Floating Gaming Decorations
+   ============================================ */
+
+.floating-decorations {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* === Base Decoration Item === */
+.deco {
+  position: absolute;
+  opacity: 0;
+  font-size: 1.5rem;
+  animation: floatDeco 18s ease-in-out infinite;
+  filter: blur(0.5px);
+  will-change: transform, opacity;
+}
+
+/* === Individual Positions & Timings === */
+
+/* Gamepad — top left area */
+.deco-1 {
+  top: 8%;
+  left: 5%;
+  font-size: 2rem;
+  animation-duration: 22s;
+  animation-delay: 0s;
+  opacity: 0.15;
+}
+
+/* Joystick — right side of hero */
+.deco-2 {
+  top: 15%;
+  right: 8%;
+  font-size: 2.5rem;
+  animation-duration: 25s;
+  animation-delay: -3s;
+  opacity: 0.12;
+}
+
+/* Cookie — left side, menu area */
+.deco-3 {
+  top: 35%;
+  left: 3%;
+  font-size: 1.8rem;
+  animation-duration: 20s;
+  animation-delay: -7s;
+  opacity: 0.14;
+}
+
+/* Star — right hero */
+.deco-4 {
+  top: 20%;
+  right: 15%;
+  font-size: 1rem;
+  animation-duration: 15s;
+  animation-delay: -2s;
+  opacity: 0.2;
+}
+
+/* Controller — mid right */
+.deco-5 {
+  top: 50%;
+  right: 4%;
+  font-size: 2.2rem;
+  animation-duration: 28s;
+  animation-delay: -10s;
+  opacity: 0.1;
+}
+
+/* Diamond — left mid */
+.deco-6 {
+  top: 45%;
+  left: 8%;
+  font-size: 1.4rem;
+  animation-duration: 19s;
+  animation-delay: -5s;
+  opacity: 0.13;
+}
+
+/* Fire — bottom right */
+.deco-7 {
+  top: 70%;
+  right: 10%;
+  font-size: 1.6rem;
+  animation-duration: 23s;
+  animation-delay: -12s;
+  opacity: 0.11;
+}
+
+/* Small star — top center */
+.deco-8 {
+  top: 5%;
+  left: 40%;
+  font-size: 1.2rem;
+  color: var(--neon-purple);
+  text-shadow: 0 0 8px var(--neon-purple);
+  animation-duration: 12s;
+  animation-delay: -1s;
+  opacity: 0.25;
+  filter: none;
+}
+
+/* Joystick — bottom left */
+.deco-9 {
+  top: 75%;
+  left: 6%;
+  font-size: 1.8rem;
+  animation-duration: 26s;
+  animation-delay: -8s;
+  opacity: 0.1;
+}
+
+/* Cookie — right of menu */
+.deco-10 {
+  top: 55%;
+  right: 6%;
+  font-size: 1.5rem;
+  animation-duration: 21s;
+  animation-delay: -15s;
+  opacity: 0.12;
+}
+
+/* Star glyph — left hero */
+.deco-11 {
+  top: 12%;
+  left: 20%;
+  font-size: 0.9rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  animation-duration: 14s;
+  animation-delay: -4s;
+  opacity: 0.3;
+  filter: none;
+}
+
+/* Zap — right center */
+.deco-12 {
+  top: 30%;
+  right: 3%;
+  font-size: 1.3rem;
+  animation-duration: 17s;
+  animation-delay: -6s;
+  opacity: 0.15;
+}
+
+/* Small star — bottom center */
+.deco-13 {
+  top: 85%;
+  left: 50%;
+  font-size: 1rem;
+  color: var(--neon-purple);
+  text-shadow: 0 0 8px var(--neon-purple);
+  animation-duration: 13s;
+  animation-delay: -9s;
+  opacity: 0.2;
+  filter: none;
+}
+
+/* Gamepad — bottom mid */
+.deco-14 {
+  top: 65%;
+  left: 15%;
+  font-size: 1.6rem;
+  animation-duration: 24s;
+  animation-delay: -11s;
+  opacity: 0.09;
+}
+
+/* Star hollow — top right corner */
+.deco-15 {
+  top: 3%;
+  right: 20%;
+  font-size: 1.1rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px var(--neon-cyan);
+  animation-duration: 16s;
+  animation-delay: -3s;
+  opacity: 0.22;
+  filter: none;
+}
+
+/* Trophy — right lower */
+.deco-16 {
+  top: 60%;
+  right: 18%;
+  font-size: 1.4rem;
+  animation-duration: 27s;
+  animation-delay: -14s;
+  opacity: 0.1;
+}
+
+/* Star — left lower */
+.deco-17 {
+  top: 80%;
+  left: 25%;
+  font-size: 0.8rem;
+  color: var(--neon-yellow, #eab308);
+  text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+  animation-duration: 11s;
+  animation-delay: -2s;
+  opacity: 0.25;
+  filter: none;
+}
+
+/* Dice — left center */
+.deco-18 {
+  top: 40%;
+  left: 20%;
+  font-size: 1.3rem;
+  animation-duration: 20s;
+  animation-delay: -7s;
+  opacity: 0.11;
+}
+
+/* === Float Animation for Decoration Items === */
+@keyframes floatDeco {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: var(--deco-opacity, 0.12);
+  }
+  20% {
+    transform: translate(10px, -20px) rotate(15deg) scale(1.1);
+    opacity: calc(var(--deco-opacity, 0.12) * 1.5);
+  }
+  40% {
+    transform: translate(-8px, -10px) rotate(-10deg) scale(0.95);
+    opacity: var(--deco-opacity, 0.12);
+  }
+  60% {
+    transform: translate(15px, 5px) rotate(20deg) scale(1.05);
+    opacity: calc(var(--deco-opacity, 0.12) * 1.3);
+  }
+  80% {
+    transform: translate(-5px, -15px) rotate(-5deg) scale(1.1);
+    opacity: var(--deco-opacity, 0.12);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: var(--deco-opacity, 0.12);
+  }
+}
+
+/* ============================================
+   Pixel Sparkle Particles
+   ============================================ */
+.pixel-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--neon-purple);
+  box-shadow: 0 0 6px var(--neon-purple), 0 0 12px var(--neon-purple);
+  opacity: 0;
+  animation: sparkle 4s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Particle positions */
+.pp-1  { top: 10%; left: 12%; animation-delay: 0s; animation-duration: 5s; }
+.pp-2  { top: 22%; right: 18%; animation-delay: -1.2s; animation-duration: 4.5s; background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan); }
+.pp-3  { top: 38%; left: 25%; animation-delay: -2.5s; animation-duration: 3.8s; }
+.pp-4  { top: 50%; right: 12%; animation-delay: -0.8s; animation-duration: 5.5s; background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan); }
+.pp-5  { top: 65%; left: 8%;  animation-delay: -3s; animation-duration: 4s; width: 4px; height: 4px; }
+.pp-6  { top: 78%; right: 25%; animation-delay: -1.8s; animation-duration: 6s; background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan); }
+.pp-7  { top: 15%; left: 55%; animation-delay: -4s; animation-duration: 4.2s; width: 2px; height: 2px; }
+.pp-8  { top: 42%; left: 45%; animation-delay: -2s; animation-duration: 5.8s; background: var(--neon-yellow, #eab308); box-shadow: 0 0 6px rgba(234, 179, 8, 0.6); width: 2px; height: 2px; }
+.pp-9  { top: 88%; left: 35%; animation-delay: -3.5s; animation-duration: 3.5s; }
+.pp-10 { top: 5%;  right: 30%; animation-delay: -0.5s; animation-duration: 4.8s; background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan); width: 4px; height: 4px; }
+.pp-11 { top: 55%; left: 60%; animation-delay: -2.2s; animation-duration: 5.2s; width: 2px; height: 2px; }
+.pp-12 { top: 72%; right: 8%;  animation-delay: -1s; animation-duration: 4.6s; background: var(--neon-yellow, #eab308); box-shadow: 0 0 6px rgba(234, 179, 8, 0.6); }
+
+/* === Sparkle Animation === */
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) translate(0, 0);
+  }
+  20% {
+    opacity: 0.8;
+    transform: scale(1) translate(2px, -3px);
+  }
+  40% {
+    opacity: 0.3;
+    transform: scale(0.6) translate(-1px, 2px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: scale(1.2) translate(3px, -1px);
+  }
+  80% {
+    opacity: 0.4;
+    transform: scale(0.8) translate(-2px, -2px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) translate(0, 0);
+  }
+}
+
+/* === Responsive: Hide some on mobile for performance === */
+@media (max-width: 768px) {
+  .deco {
+    font-size: 1rem !important;
+  }
+  .deco-5, .deco-7, .deco-9, .deco-14, .deco-16, .deco-18 {
+    display: none;
+  }
+  .pp-3, .pp-5, .pp-7, .pp-9, .pp-11 {
+    display: none;
+  }
+}
