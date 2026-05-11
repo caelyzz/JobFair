@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LogIn, Lock, User, ArrowLeft } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -9,6 +10,19 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        if (session.user.email?.startsWith('pc')) {
+          navigate('/pc-dashboard');
+        } else {
+          navigate('/admin');
+        }
+      }
+    });
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,15 +30,19 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
       
-      // Redirect to admin dashboard (to be implemented)
-      window.location.href = '/admin';
+      // Redirect based on email (admin vs pc client)
+      if (data?.user?.email?.startsWith('pc')) {
+        navigate('/pc-dashboard');
+      } else {
+        navigate('/admin');
+      }
     } catch (err: any) {
       setError(err.message || 'Login gagal. Periksa kembali email dan password Anda.');
     } finally {

@@ -20,7 +20,7 @@ export const HeroSection: React.FC = () => {
           <img src="/logo_rcade_rpl.png" alt="R-CADE Logo" className="hero-logo" />
           <div className="hero-logo-glow" />
         </motion.div>
-
+        {/* JOBFAIR{S3lamat_K4mu_Berhasil_696969} */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export const HeroSection: React.FC = () => {
           </p>
 
           <p className="hero-description">
-            Nikmati pengalaman gaming terbaik dengan harga terjangkau! 
+            Nikmati pengalaman gaming terbaik dengan harga terjangkau!
             Main game seru dan camilan cookies enak di stand kami.
           </p>
         </motion.div>

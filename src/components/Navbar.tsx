@@ -28,7 +28,6 @@ export const Navbar: React.FC = () => {
           <a href="/#benefits" className="nav-link" onClick={() => setIsOpen(false)}>Keunggulan</a>
           <a href="/#availability" className="nav-link" onClick={() => setIsOpen(false)}>Status PC</a>
           <a href="/#schedule" className="nav-link" onClick={() => setIsOpen(false)}>Jadwal</a>
-          <Link to="/login" className="nav-link login-nav-link" onClick={() => setIsOpen(false)}>Sign In</Link>
         </div>
 
         <button className="nav-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">

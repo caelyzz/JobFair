@@ -50,12 +50,27 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 }
 
+let voices: SpeechSynthesisVoice[] = [];
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  voices = window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    voices = window.speechSynthesis.getVoices();
+  };
+}
+
 const speak = (text: string) => {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'id-ID';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
+    utterance.rate = 0.85;
+    utterance.pitch = 1.05;
+    
+    const idVoices = voices.filter(v => v.lang.includes('id'));
+    if (idVoices.length > 0) {
+      const bestVoice = idVoices.find(v => v.name.includes('Google') || v.name.includes('Gadis') || v.name.includes('Female')) || idVoices[0];
+      utterance.voice = bestVoice;
+    }
+    
     window.speechSynthesis.speak(utterance);
     return utterance;
   }
@@ -409,11 +424,11 @@ const AdminDashboard: React.FC = () => {
                 let type: 'countdown' | 'end' = 'countdown';
                 
                 if (currentSec === 10) {
-                  msg = `Peringatan, PC ${pc.pcNumber} Kak ${pc.customerName}, sepuluh detik lagi.`;
+                  msg = `Mohon perhatian. Waktu untuk Kak ${pc.customerName} di PC ${pc.pcNumber} sepuluh detik lagi.`;
                 } else if (currentSec > 0) {
-                  msg = `Kak ${pc.customerName}, ${currentSec}.`;
+                  msg = `${currentSec}.`;
                 } else if (currentSec === 0) {
-                  msg = `Waktu PC ${pc.pcNumber} Kak ${pc.customerName} sudah habis.`;
+                  msg = `Waktu bermain untuk Kak ${pc.customerName} di PC ${pc.pcNumber} telah habis.`;
                   type = 'end';
                 }
 
@@ -463,7 +478,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleManualCall = (pc: PcSession) => {
     if (pc.customerName) {
-      addToSpeechQueue(`Panggilan untuk Kak ${pc.customerName}, silakan menuju ke PC ${pc.pcNumber}.`, pc.pcNumber, -1, 'manual');
+      addToSpeechQueue(`Pengumuman. Panggilan kepada Kak ${pc.customerName}, silakan menuju ke PC ${pc.pcNumber}.`, pc.pcNumber, -1, 'manual');
     }
   };
 
@@ -568,7 +583,10 @@ const AdminDashboard: React.FC = () => {
             <span className="clock-val">{currentTime}</span>
             <span className="clock-wib">WIB</span>
           </div>
-          <button className="logout-btn" onClick={() => navigate('/')}><LogOut size={16} /> Keluar</button>
+          <button className="logout-btn" onClick={async () => {
+            await supabase.auth.signOut();
+            navigate('/');
+          }}><LogOut size={16} /> Keluar</button>
         </div>
       </header>
 

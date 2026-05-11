@@ -1,0 +1,254 @@
+.pc-dashboard {
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.pc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 10;
+}
+
+.pc-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pc-icon {
+  color: #00ffcc;
+}
+
+.pc-logo-area h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0;
+  background: linear-gradient(90deg, #00ffcc, #00b3ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pc-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.pc-logout-btn:hover {
+  background: rgba(255, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.pc-main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  z-index: 10;
+}
+
+.pc-status-card {
+  background: rgba(20, 20, 20, 0.8);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 800px;
+  padding: 50px;
+  text-align: center;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s ease;
+}
+
+.pc-status-card.occupied {
+  border-color: rgba(0, 255, 204, 0.3);
+  box-shadow: 0 0 80px rgba(0, 255, 204, 0.1);
+}
+
+.pc-status-card.available {
+  border-color: rgba(0, 255, 0, 0.2);
+}
+
+.pc-card-header h2 {
+  font-size: 2.5rem;
+  margin: 0 0 30px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #00ffcc;
+}
+
+.pc-card-header.available h2 {
+  color: #4ade80;
+}
+
+.pc-user-info {
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+}
+
+.pc-user-info strong {
+  color: #00ffcc;
+}
+
+.pc-enjoy {
+  font-size: 1.2rem;
+  color: #888;
+  margin-top: 10px;
+}
+
+.pc-timer-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.timer-icon {
+  color: #00ffcc;
+}
+
+.timer-text {
+  font-size: 6rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+  color: #fff;
+}
+
+.pc-rules {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #aaa;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px 20px;
+  border-radius: 12px;
+}
+
+.pc-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.pc-finish-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 77, 77, 0.15);
+  color: #ff4d4d;
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pc-finish-btn:hover {
+  background: rgba(255, 77, 77, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+}
+
+.pc-ready-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 0;
+}
+
+.pc-ready-icon {
+  color: #4ade80;
+  filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.4));
+}
+
+.pc-ready-info h3 {
+  font-size: 2.5rem;
+  color: #fff;
+  margin: 0;
+}
+
+.pc-ready-info p {
+  font-size: 1.5rem;
+  color: #888;
+}
+
+.pc-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #0a0a0a;
+  color: #00ffcc;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.pc-background-effects {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pc-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  transition: all 1s ease;
+}
+
+.pc-glow.occupied {
+  background: radial-gradient(circle, #00ffcc 0%, transparent 70%);
+}
+
+.pc-glow.available {
+  background: radial-gradient(circle, #4ade80 0%, transparent 70%);
+}
+
+@media (max-width: 768px) {
+  .pc-status-card {
+    padding: 30px 20px;
+  }
+  .pc-card-header h2 {
+    font-size: 1.8rem;
+  }
+  .timer-text {
+    font-size: 4rem;
+  }
+}
