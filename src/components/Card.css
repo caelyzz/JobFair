@@ -1,0 +1,16 @@
+.card {
+  padding: 1.5rem;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.card-content {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}

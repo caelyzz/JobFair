@@ -1,0 +1,283 @@
+.pc-status-section {
+  padding: 6rem 0;
+}
+
+/* === Digital Clock === */
+.digital-clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding: 1rem 2.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.clock-icon {
+  color: var(--neon-cyan);
+}
+
+.clock-time {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+  letter-spacing: 0.1em;
+}
+
+.clock-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.clock-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--glass-border);
+}
+
+.avail-indicator {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.avail-indicator.has-available {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.avail-indicator.all-busy {
+  color: var(--neon-red);
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* === PC Grid === */
+.pc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.pc-card {
+  position: relative;
+  padding: 2rem 1.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.pc-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Available */
+.pc-available {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.pc-available:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.1);
+}
+
+/* Occupied */
+.pc-occupied {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.pc-occupied:hover {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+}
+
+/* === Card Header === */
+.pc-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pc-monitor-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+}
+
+.pc-monitor-icon.available {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+}
+
+.pc-monitor-icon.occupied {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--neon-red);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.pc-number {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* === Status Info === */
+.pc-status-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.available {
+  background: var(--neon-green);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.status-dot.occupied {
+  background: var(--neon-red);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  animation: neonPulse 1.5s ease-in-out infinite;
+}
+
+.status-text {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+}
+
+.available-text {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.occupied-text {
+  color: var(--neon-red);
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* === PC Details (Occupied) === */
+.pc-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.countdown-display {
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: var(--radius-sm);
+}
+
+.countdown-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.countdown-value {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--neon-red);
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  letter-spacing: 0.1em;
+}
+
+/* === Available Message === */
+.pc-available-msg {
+  padding: 0.75rem;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--neon-green);
+}
+
+/* === Glow Border === */
+.pc-glow-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.pc-glow-border.available {
+  background: var(--neon-green);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+.pc-glow-border.occupied {
+  background: var(--neon-red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* === Responsive === */
+@media (max-width: 1024px) {
+  .pc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .pc-grid {
+    grid-template-columns: 1fr;
+  }
+  .digital-clock {
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    gap: 0.75rem;
+  }
+  .clock-time {
+    font-size: 1.5rem;
+  }
+}

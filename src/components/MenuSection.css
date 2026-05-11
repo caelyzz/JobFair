@@ -1,0 +1,300 @@
+.menu-section {
+  padding: 6rem 0;
+  position: relative;
+}
+
+/* === Section Header === */
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+  padding: 0.4rem 1.25rem;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 2.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.section-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* === Category === */
+.menu-category {
+  margin-bottom: 3rem;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--neon-purple);
+}
+
+.category-label h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+}
+
+/* === Game Cards === */
+.game-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.game-card {
+  position: relative;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.game-card-cyan::before { background: var(--neon-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+.game-card-blue::before { background: var(--neon-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+.game-card-purple::before { background: var(--neon-purple); box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.game-card.popular {
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: var(--glow-purple);
+}
+
+.popular-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  color: white;
+  background: var(--gradient-purple);
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+}
+
+.game-card-icon {
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.game-card-cyan .game-card-icon { color: var(--neon-cyan); }
+.game-card-blue .game-card-icon { color: var(--neon-blue); }
+.game-card-purple .game-card-icon { color: var(--neon-purple); }
+
+.game-card-duration {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.game-card-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* === Cookie Card === */
+.cookie-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+}
+
+.cookie-card:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.cookie-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cookie-icon {
+  color: var(--neon-orange);
+}
+
+.cookie-info h4 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.cookie-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.cookie-price-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.cookie-price {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--neon-orange);
+  text-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+.cookie-unit {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* === Bundle Cards === */
+.bundle-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.bundle-card {
+  position: relative;
+  padding: 2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.bundle-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.bundle-card-green::before { background: var(--neon-green); box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+.bundle-card-orange::before { background: var(--neon-orange); box-shadow: 0 0 15px rgba(249, 115, 22, 0.5); }
+
+.bundle-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.bundle-badge {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.badge-green {
+  color: var(--neon-green);
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-orange {
+  color: var(--neon-orange);
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.bundle-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.bundle-price {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.bundle-card-green .bundle-price {
+  color: var(--neon-green);
+  text-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.bundle-card-orange .bundle-price {
+  color: var(--neon-orange);
+  text-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+.bundle-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bundle-items li {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.bundle-items li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  color: var(--neon-purple);
+  font-size: 0.7rem;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .game-cards { grid-template-columns: 1fr; }
+  .bundle-cards { grid-template-columns: 1fr; }
+  .cookie-card { flex-direction: column; gap: 1.5rem; text-align: center; }
+  .cookie-info { flex-direction: column; }
+  .section-title { font-size: 2rem; }
+}
