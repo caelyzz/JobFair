@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Gamepad2, Cookie, DollarSign, ShoppingCart, Monitor,
   Clock, LogOut, Package, Plus, Minus, CheckCircle, X,
-  CreditCard, Banknote, CalendarDays, Volume2, Trash2
+  CreditCard, Banknote, CalendarDays, Volume2, Trash2, FileDown
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import './AdminDashboard.css';
@@ -31,6 +31,7 @@ interface Transaction {
   paymentMethod: 'cash' | 'qris';
   type: 'game' | 'cookie' | 'package';
   createdAt: Date;
+  items?: { category: string; subtotal: number }[];
 }
 
 // ====== Helpers ======
@@ -284,6 +285,13 @@ const AdminDashboard: React.FC = () => {
   const [resetError, setResetError] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
 
+  // Individual Transaction Delete State
+  const [showDeleteTxModal, setShowDeleteTxModal] = useState(false);
+  const [selectedTxId, setSelectedTxId] = useState<string | null>(null);
+  const [deletePin, setDeletePin] = useState('');
+  const [deletePinError, setDeletePinError] = useState(false);
+  const [isDeletingTx, setIsDeletingTx] = useState(false);
+
   const handleResetDatabase = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (resetPin === '112233') {
@@ -325,6 +333,63 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const exportToExcel = () => {
+    if (transactions.length === 0) {
+      alert('Tidak ada data transaksi untuk di-export.');
+      return;
+    }
+
+    const headers = ['Waktu', 'Nama Customer', 'Tipe Transaksi', 'Metode Pembayaran', 'Total (IDR)'];
+    const rows = transactions.map(tx => [
+      tx.createdAt.toLocaleString('id-ID'),
+      `"${tx.customerName.replace(/"/g, '""')}"`,
+      tx.type === 'game' ? 'Game' : tx.type === 'cookie' ? 'Cookies' : 'Paket',
+      tx.paymentMethod.toUpperCase(),
+      tx.totalAmount
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fileName = `Laporan_Transaksi_RCADE_${new Date().toISOString().split('T')[0]}.csv`;
+    link.setAttribute('href', url);
+    link.setAttribute('download', fileName);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDeleteTransaction = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (deletePin === '221133') {
+      setIsDeletingTx(true);
+      try {
+        if (!selectedTxId) return;
+        const { error } = await supabase.from('transactions').delete().eq('id', selectedTxId);
+        if (error) throw error;
+        
+        setTransactions(prev => prev.filter(t => t.id !== selectedTxId));
+        setShowDeleteTxModal(false);
+        setDeletePin('');
+        setDeletePinError(false);
+      } catch (err: any) {
+        alert('Gagal menghapus transaksi: ' + err.message);
+      } finally {
+        setIsDeletingTx(false);
+      }
+    } else {
+      setDeletePinError(true);
+      setDeletePin('');
+    }
+  };
+
+
   // ====== Supabase Data Fetching ======
   const fetchPcSessions = useCallback(async () => {
     const { data } = await supabase
@@ -359,13 +424,10 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const fetchTransactions = useCallback(async () => {
-    const today = new Date(); today.setHours(0, 0, 0, 0);
     const { data } = await supabase
       .from('transactions')
       .select('*, transaction_items(product_id, products(category))')
-      .gte('created_at', today.toISOString())
-      .order('created_at', { ascending: false })
-      .limit(20);
+      .order('created_at', { ascending: false });
     if (data) {
       setTransactions(data.map((t: any) => {
         const cats = (t.transaction_items || []).map((i: any) => i.products?.category);
@@ -373,7 +435,19 @@ const AdminDashboard: React.FC = () => {
         if (cats.includes('package')) type = 'package';
         else if (cats.includes('cookie') && cats.includes('game')) type = 'package';
         else if (cats.includes('cookie')) type = 'cookie';
-        return { id: t.id, customerName: t.customer_name, totalAmount: t.total_amount, paymentMethod: t.payment_method, type, createdAt: new Date(t.created_at) };
+        
+        return { 
+          id: t.id, 
+          customerName: t.customer_name, 
+          totalAmount: t.total_amount, 
+          paymentMethod: t.payment_method, 
+          type, 
+          createdAt: new Date(t.created_at),
+          items: (t.transaction_items || []).map((i: any) => ({
+            category: i.products?.category,
+            subtotal: i.subtotal
+          }))
+        };
       }));
     }
   }, []);
@@ -514,6 +588,20 @@ const AdminDashboard: React.FC = () => {
   const totalCookies = transactions.filter(t => t.type === 'cookie' || t.type === 'package').length;
   const totalGameSessions = transactions.filter(t => t.type === 'game' || t.type === 'package').length;
 
+  // New Detailed Stats
+  const revenueCookies = transactions.reduce((acc, t) => {
+    const cookiePart = (t.items || []).filter(i => i.category === 'cookie').reduce((s, i) => s + i.subtotal, 0);
+    return acc + cookiePart;
+  }, 0);
+
+  const revenueGames = transactions.reduce((acc, t) => {
+    const gamePart = (t.items || []).filter(i => i.category === 'game' || i.category === 'package').reduce((s, i) => s + i.subtotal, 0);
+    return acc + gamePart;
+  }, 0);
+
+  const revenueCash = transactions.filter(t => t.paymentMethod === 'cash').reduce((s, t) => s + t.totalAmount, 0);
+  const revenueQris = transactions.filter(t => t.paymentMethod === 'qris').reduce((s, t) => s + t.totalAmount, 0);
+
   const handleFinishPc = async (pcNum: number) => {
     // Optimistic UI update
     setPcs(prev => prev.map(pc => pc.pcNumber === pcNum ? { ...pc, status: 'available' as const, customerName: undefined, endTime: undefined, duration: undefined } : pc));
@@ -639,8 +727,11 @@ const AdminDashboard: React.FC = () => {
             <span className="clock-val">{currentTime}</span>
             <span className="clock-wib">WIB</span>
           </div>
-          <button className="reset-db-btn" onClick={() => setShowResetModal(true)}>
+          <button className="reset-db-btn" onClick={() => setShowResetModal(true)} style={{ marginRight: '10px' }}>
             <Trash2 size={16} /> Reset
+          </button>
+          <button className="export-btn" onClick={exportToExcel}>
+            <FileDown size={16} /> Export Excel
           </button>
           <button className="logout-btn" onClick={async () => {
             await supabase.auth.signOut();
@@ -662,17 +753,33 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         <section className="stats-grid">
-          <div className="stat-card">
+          <div className="stat-card main-stat">
             <div className="stat-icon icon-green"><DollarSign size={24} /></div>
             <div><p className="stat-label">Total Pendapatan</p><p className="stat-value green">{formatCurrency(totalRevenue)}</p></div>
           </div>
           <div className="stat-card">
-            <div className="stat-icon icon-orange"><ShoppingCart size={24} /></div>
-            <div><p className="stat-label">Cookies Terjual</p><p className="stat-value orange">{totalCookies} transaksi</p></div>
+            <div className="stat-icon icon-orange"><Banknote size={24} /></div>
+            <div><p className="stat-label">Penjualan Cash</p><p className="stat-value orange">{formatCurrency(revenueCash)}</p></div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon icon-blue"><CreditCard size={24} /></div>
+            <div><p className="stat-label">Penjualan QRIS</p><p className="stat-value blue">{formatCurrency(revenueQris)}</p></div>
           </div>
           <div className="stat-card">
             <div className="stat-icon icon-purple"><Gamepad2 size={24} /></div>
+            <div><p className="stat-label">Pendapatan Game</p><p className="stat-value purple">{formatCurrency(revenueGames)}</p></div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon icon-orange"><Cookie size={24} /></div>
+            <div><p className="stat-label">Pendapatan Cookies</p><p className="stat-value orange">{formatCurrency(revenueCookies)}</p></div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon icon-purple"><Package size={20} /></div>
             <div><p className="stat-label">Total Sesi Game</p><p className="stat-value purple">{totalGameSessions} sesi</p></div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon icon-orange"><Cookie size={20} /></div>
+            <div><p className="stat-label">Cookies Terjual</p><p className="stat-value orange">{totalCookies} transaksi</p></div>
           </div>
         </section>
 
@@ -729,7 +836,7 @@ const AdminDashboard: React.FC = () => {
           <div className="panel-header"><CalendarDays size={20} /> <h2>Transaksi Terakhir</h2></div>
           <div className="tx-table-wrapper">
             <table className="tx-table">
-              <thead><tr><th>Waktu</th><th>Customer</th><th>Tipe</th><th>Metode</th><th>Total</th></tr></thead>
+              <thead><tr><th>Waktu</th><th>Customer</th><th>Tipe</th><th>Metode</th><th>Total</th><th>Aksi</th></tr></thead>
               <tbody>
                 {transactions.map(tx => (
                   <tr key={tx.id}>
@@ -738,6 +845,19 @@ const AdminDashboard: React.FC = () => {
                     <td><span className={`tx-type type-${tx.type}`}>{tx.type === 'game' ? 'Game' : tx.type === 'cookie' ? 'Cookies' : 'Paket'}</span></td>
                     <td className="tx-pay">{tx.paymentMethod === 'cash' ? '💵 Cash' : '📱 QRIS'}</td>
                     <td className="tx-amount">{formatCurrency(tx.totalAmount)}</td>
+                    <td>
+                      <button 
+                        className="tx-delete-btn" 
+                        onClick={() => { 
+                          setSelectedTxId(tx.id); 
+                          setShowDeleteTxModal(true); 
+                          setDeletePin(''); 
+                          setDeletePinError(false); 
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -786,6 +906,49 @@ const AdminDashboard: React.FC = () => {
                 </button>
                 <button type="submit" className="confirm-reset-btn" disabled={isResetting || resetPin.length < 6}>
                   {isResetting ? 'Sedang Menghapus...' : 'Ya, Reset Sekarang'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Delete Single Transaction Modal */}
+      {showDeleteTxModal && (
+        <div className="modal-overlay" onClick={() => !isDeletingTx && setShowDeleteTxModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="modal glass danger-modal"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 className="danger-text"><Trash2 size={22} /> Hapus Transaksi</h2>
+              <button className="modal-close" onClick={() => setShowDeleteTxModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleDeleteTransaction} className="modal-body">
+              <p className="danger-warning">
+                Konfirmasi penghapusan transaksi. Masukkan PIN untuk melanjutkan.
+              </p>
+              <div className="form-group">
+                <label>PIN Konfirmasi (Hapus per Transaksi)</label>
+                <input
+                  type="password"
+                  value={deletePin}
+                  onChange={e => setDeletePin(e.target.value)}
+                  placeholder="••••••"
+                  autoFocus
+                  maxLength={6}
+                  className="pin-input-field"
+                />
+                {deletePinError && <p className="error-text">PIN salah! Silakan coba lagi.</p>}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="cancel-btn" onClick={() => setShowDeleteTxModal(false)} disabled={isDeletingTx}>
+                  Batal
+                </button>
+                <button type="submit" className="confirm-reset-btn" disabled={isDeletingTx || deletePin.length < 6}>
+                  {isDeletingTx ? 'Sedang Menghapus...' : 'Ya, Hapus'}
                 </button>
               </div>
             </form>

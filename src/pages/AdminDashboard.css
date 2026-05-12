@@ -44,6 +44,15 @@
 }
 .logout-btn:hover { background: rgba(239,68,68,0.2); box-shadow: 0 0 15px rgba(239,68,68,0.2); }
 
+.export-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: var(--transition-fast); margin-right: 10px;
+}
+.export-btn:hover { background: rgba(16, 185, 129, 0.2); box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+
 /* === Main === */
 .admin-main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
 
@@ -72,7 +81,8 @@
 .cookie-action:hover { box-shadow: 0 0 40px rgba(249,115,22,0.4); transform: translateY(-2px); }
 
 /* === Stats === */
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.stat-card.main-stat { grid-column: span 2; }
 .stat-card {
   display: flex; align-items: center; gap: 1.25rem;
   padding: 1.5rem; background: var(--glass-bg); backdrop-filter: blur(16px);
@@ -84,11 +94,13 @@
 .icon-green { background: rgba(34,197,94,0.1); color: var(--neon-green); }
 .icon-orange { background: rgba(249,115,22,0.1); color: var(--neon-orange); }
 .icon-purple { background: rgba(168,85,247,0.1); color: var(--neon-purple); }
+.icon-blue { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
 .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem; }
 .stat-value { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; letter-spacing: 0.05em; }
 .stat-value.green { color: var(--neon-green); text-shadow: 0 0 10px rgba(34,197,94,0.3); }
 .stat-value.orange { color: var(--neon-orange); text-shadow: 0 0 10px rgba(249,115,22,0.3); }
 .stat-value.purple { color: var(--neon-purple); text-shadow: 0 0 10px rgba(168,85,247,0.3); }
+.stat-value.blue { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(6, 182, 212, 0.3); }
 
 /* === Panels === */
 .panel {
@@ -169,6 +181,24 @@
 .type-game { color: var(--neon-purple); background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2); }
 .type-cookie { color: var(--neon-orange); background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.2); }
 .type-package { color: var(--neon-cyan); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); }
+
+.tx-delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--neon-red);
+  padding: 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tx-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--neon-red);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
 .tx-pay { font-size: 0.8rem; }
 .tx-amount { font-family: var(--font-heading); font-weight: 700; color: var(--neon-green); font-size: 0.85rem; }
 

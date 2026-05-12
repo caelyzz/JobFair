@@ -1,6 +1,6 @@
 # Skema Database (Supabase / PostgreSQL) - Game-IT & Cookies XI RPL
 
-Dokumen ini berisi rancangan skema database relasional (PostgreSQL) yang akan diimplementasikan pada Supabase. Skema ini telah disesuaikan untuk mendukung fitur hitung kembalian, sistem antrean (waiting list), dan kapasitas 4 PC.
+Dokumen ini berisi rancangan skema database relasional (PostgreSQL) yang akan diimplementasikan pada Supabase. Skema ini telah disesuaikan untuk mendukung fitur hitung kembalian, sistem antrean (waiting list), dan kapasitas 6 PC.
 
 ---
 
@@ -54,7 +54,7 @@ Menyimpan log, jadwal, dan antrean penggunaan PC.
 | :--- | :--- | :--- | :--- |
 | `id` | `UUID` | Primary Key. | `gen_random_uuid()` |
 | `transaction_id` | `UUID` | Foreign Key ke `transactions.id`. | ON DELETE CASCADE |
-| `pc_number` | `INT2` | Nomor PC (1, 2, 3, atau 4). | NOT NULL, `BETWEEN 1 AND 4` |
+| `pc_number` | `INT2` | Nomor PC (1 sampai 6). | NOT NULL, `BETWEEN 1 AND 6` |
 | `start_time` | `TIMESTAMPTZ`| Jam mulai bermain. | NOT NULL |
 | `end_time` | `TIMESTAMPTZ`| Jam selesai bermain. | NOT NULL |
 | `status` | `VARCHAR` | Status: `'waiting'`, `'active'`, atau `'finished'`. | DEFAULT `'active'` |
