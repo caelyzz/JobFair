@@ -147,9 +147,25 @@ const PcDashboard: React.FC = () => {
     return () => clearInterval(timer);
   }, [status, endTime]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/secret-login');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [logoutPin, setLogoutPin] = useState('');
+  const [pinError, setPinError] = useState(false);
+
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+    setLogoutPin('');
+    setPinError(false);
+  };
+
+  const handleLogoutConfirm = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (logoutPin === '112233') {
+      await supabase.auth.signOut();
+      navigate('/secret-login');
+    } else {
+      setPinError(true);
+      setLogoutPin('');
+    }
   };
 
   const handleFinishSession = async () => {
@@ -186,7 +202,7 @@ const PcDashboard: React.FC = () => {
           >
             <Monitor size={18} /> Test Suara
           </button>
-          <button onClick={handleLogout} className="pc-logout-btn">
+          <button onClick={handleLogoutClick} className="pc-logout-btn">
             <LogOut size={18} /> Logout
           </button>
         </div>
@@ -239,6 +255,48 @@ const PcDashboard: React.FC = () => {
       <div className="pc-background-effects">
         <div className={`pc-glow ${status}`} />
       </div>
+
+      {/* Logout PIN Modal */}
+      {showLogoutModal && (
+        <div className="pin-modal-overlay">
+          <motion.div 
+            className="pin-modal"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+          >
+            <h2>Masukkan PIN Logout</h2>
+            <form onSubmit={handleLogoutConfirm}>
+              <div className="pin-input-group">
+                <input 
+                  type="password"
+                  className="pin-input"
+                  value={logoutPin}
+                  onChange={(e) => setLogoutPin(e.target.value)}
+                  placeholder="••••••"
+                  autoFocus
+                  maxLength={6}
+                />
+                {pinError && <p className="pin-error">PIN Salah! Silakan coba lagi.</p>}
+              </div>
+              <div className="pin-actions">
+                <button 
+                  type="button" 
+                  className="pin-btn cancel" 
+                  onClick={() => setShowLogoutModal(false)}
+                >
+                  Batal
+                </button>
+                <button 
+                  type="submit" 
+                  className="pin-btn confirm"
+                >
+                  Konfirmasi
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
