@@ -588,21 +588,6 @@ const AdminDashboard: React.FC = () => {
   const totalCookies = transactions.filter(t => t.type === 'cookie' || t.type === 'package').length;
   const totalGameSessions = transactions.filter(t => t.type === 'game' || t.type === 'package').length;
 
-  // New Detailed Stats (Summing directly from transaction items)
-  const revenueCookies = transactions.reduce((acc, t) => {
-    const cookiePart = (t.items || [])
-      .filter(i => i.category === 'cookie')
-      .reduce((s, i) => s + i.subtotal, 0);
-    return acc + cookiePart;
-  }, 0);
-
-  const revenueGames = transactions.reduce((acc, t) => {
-    const gamePart = (t.items || [])
-      .filter(i => i.category === 'game' || i.category === 'package')
-      .reduce((s, i) => s + i.subtotal, 0);
-    return acc + gamePart;
-  }, 0);
-
   const revenueCash = transactions.filter(t => t.paymentMethod === 'cash').reduce((s, t) => s + t.totalAmount, 0);
   const revenueQris = transactions.filter(t => t.paymentMethod === 'qris').reduce((s, t) => s + t.totalAmount, 0);
 
@@ -768,14 +753,6 @@ const AdminDashboard: React.FC = () => {
           <div className="stat-card">
             <div className="stat-icon icon-blue"><CreditCard size={24} /></div>
             <div><p className="stat-label">Penjualan QRIS</p><p className="stat-value blue">{formatCurrency(revenueQris)}</p></div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon icon-purple"><Gamepad2 size={24} /></div>
-            <div><p className="stat-label">Pendapatan Game</p><p className="stat-value purple">{formatCurrency(revenueGames)}</p></div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon icon-orange"><Cookie size={24} /></div>
-            <div><p className="stat-label">Pendapatan Cookies</p><p className="stat-value orange">{formatCurrency(revenueCookies)}</p></div>
           </div>
           <div className="stat-card">
             <div className="stat-icon icon-purple"><Package size={20} /></div>
