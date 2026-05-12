@@ -99,7 +99,7 @@
 .panel-header h2 { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.08em; }
 
 /* === PC Monitor Grid === */
-.pc-monitor-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+.pc-monitor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 .pc-monitor-card {
   padding: 1.5rem; border-radius: var(--radius-lg); background: rgba(10,0,20,0.5);
   border: 1px solid var(--glass-border); transition: var(--transition); text-align: center;
@@ -243,3 +243,25 @@
   .stock-grid { grid-template-columns: 1fr; }
   .admin-main { padding: 1rem; }
 }
+
+/* === Reset DB Button === */
+.reset-db-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; border-radius: var(--radius-sm);
+  background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2);
+  color: var(--neon-red); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  transition: var(--transition-fast); opacity: 0.7;
+}
+.reset-db-btn:hover { background: rgba(239,68,68,0.15); border-color: var(--neon-red); opacity: 1; box-shadow: 0 0 15px rgba(239,68,68,0.2); }
+
+/* === Danger Modal === */
+.danger-modal { border-color: rgba(239,68,68,0.3) !important; }
+.danger-text { color: var(--neon-red) !important; text-shadow: 0 0 10px rgba(239,68,68,0.3); }
+.danger-warning { font-size: 0.85rem; color: #fca5a5; background: rgba(239,68,68,0.1); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(239,68,68,0.2); line-height: 1.5; }
+.pin-input-field { text-align: center; font-size: 1.5rem !important; letter-spacing: 0.5em; }
+.error-text { font-size: 0.75rem; color: var(--neon-red); margin-top: 0.25rem; }
+.cancel-btn { background: none; border: 1px solid var(--glass-border); color: var(--text-muted); padding: 0.75rem 1.5rem; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition-fast); }
+.cancel-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+.confirm-reset-btn { background: var(--neon-red); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; transition: var(--transition); box-shadow: 0 0 15px rgba(239,68,68,0.2); }
+.confirm-reset-btn:hover:not(:disabled) { background: #ef4444; box-shadow: 0 0 25px rgba(239,68,68,0.4); transform: translateY(-1px); }
+.confirm-reset-btn:disabled { opacity: 0.5; cursor: not-allowed; }

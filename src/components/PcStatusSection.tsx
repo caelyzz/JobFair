@@ -25,7 +25,7 @@ function formatCurrentTime(): string {
 }
 
 function buildPcList(sessions: any[]): PcSession[] {
-  const pcList: PcSession[] = [1, 2, 3, 4].map(n => ({ pcNumber: n, status: 'available' as const }));
+  const pcList: PcSession[] = [1, 2, 3, 4, 5, 6].map(n => ({ pcNumber: n, status: 'available' as const }));
   const now = new Date();
   sessions.forEach(s => {
     if (s.status === 'active' && new Date(s.end_time) > now) {
@@ -44,7 +44,7 @@ function buildPcList(sessions: any[]): PcSession[] {
 }
 
 export const PcStatusSection: React.FC = () => {
-  const [pcList, setPcList] = useState<PcSession[]>([1, 2, 3, 4].map(n => ({ pcNumber: n, status: 'available' })));
+  const [pcList, setPcList] = useState<PcSession[]>([1, 2, 3, 4, 5, 6].map(n => ({ pcNumber: n, status: 'available' })));
   const [currentTime, setCurrentTime] = useState(formatCurrentTime());
   const [countdowns, setCountdowns] = useState<string[]>([]);
 

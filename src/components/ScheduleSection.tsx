@@ -44,7 +44,7 @@ function isSlotBooked(bookedSlots: BookedSlot[], pcNumber: number, slot: string)
 
 export const ScheduleSection: React.FC = () => {
   const timeSlots = useMemo(() => generateTimeSlots(), []);
-  const pcNumbers = [1, 2, 3, 4];
+  const pcNumbers = [1, 2, 3, 4, 5, 6];
   const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
 
   const fetchSessions = async () => {

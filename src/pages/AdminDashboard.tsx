@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Gamepad2, Cookie, DollarSign, ShoppingCart, Monitor,
   Clock, LogOut, Package, Plus, Minus, CheckCircle, X,
-  CreditCard, Banknote, CalendarDays, Volume2
+  CreditCard, Banknote, CalendarDays, Volume2, Trash2
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import './AdminDashboard.css';
@@ -56,21 +56,21 @@ const speak = (text: string) => {
     utterance.lang = 'id-ID';
     utterance.rate = 0.85;
     utterance.pitch = 1.05;
-    
+
     const availableVoices = window.speechSynthesis.getVoices();
     const idVoices = availableVoices.filter(v => v.lang.includes('id'));
-    
+
     if (idVoices.length > 0) {
-      const bestVoice = idVoices.find(v => 
-        v.name.includes('Google') || 
-        v.name.includes('Gadis') || 
-        v.name.includes('Premium') || 
-        v.name.includes('Female') || 
+      const bestVoice = idVoices.find(v =>
+        v.name.includes('Google') ||
+        v.name.includes('Gadis') ||
+        v.name.includes('Premium') ||
+        v.name.includes('Female') ||
         v.name.includes('Natural')
       ) || idVoices[0];
       utterance.voice = bestVoice;
     }
-    
+
     window.speechSynthesis.speak(utterance);
     return utterance;
   }
@@ -271,12 +271,59 @@ const CookieModal: React.FC<{
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(formatTime());
-  const [pcs, setPcs] = useState<PcSession[]>([1,2,3,4].map(n => ({ pcNumber: n, status: 'available' })));
+  const [pcs, setPcs] = useState<PcSession[]>([1, 2, 3, 4, 5, 6].map(n => ({ pcNumber: n, status: 'available' })));
   const [stocks, setStocks] = useState<CookieStock[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [countdowns, setCountdowns] = useState<string[]>([]);
   const [showGameModal, setShowGameModal] = useState(false);
   const [showCookieModal, setShowCookieModal] = useState(false);
+
+  // Reset DB State
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetPin, setResetPin] = useState('');
+  const [resetError, setResetError] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handleResetDatabase = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (resetPin === '112233') {
+      setIsResetting(true);
+      try {
+        // Delete related items first to avoid FK constraints
+        // Using common filters that match all rows
+        const { error: err1 } = await supabase.from('transaction_items').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (err1) throw err1;
+
+        const { error: err2 } = await supabase.from('pc_sessions').delete().neq('status', 'non_existent_status');
+        if (err2) throw err2;
+
+        const { error: err3 } = await supabase.from('transactions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (err3) throw err3;
+
+        // Reset local states manually for immediate feedback
+        setTransactions([]);
+        setPcs([1, 2, 3, 4, 5, 6].map(n => ({ pcNumber: n, status: 'available' })));
+        setCountdowns(['', '', '', '', '', '']);
+        
+        setShowResetModal(false);
+        setResetPin('');
+        setResetError(false);
+        alert('Data transaksi dan sesi berhasil di-reset!');
+        
+        // Final sync
+        await fetchTransactions();
+        await fetchPcSessions();
+      } catch (err: any) {
+        console.error('Reset Database Error:', err);
+        alert(`Gagal me-reset database: ${err.message || 'Cek kebijakan RLS di Supabase Dashboard'}`);
+      } finally {
+        setIsResetting(false);
+      }
+    } else {
+      setResetError(true);
+      setResetPin('');
+    }
+  };
 
   // ====== Supabase Data Fetching ======
   const fetchPcSessions = useCallback(async () => {
@@ -284,7 +331,7 @@ const AdminDashboard: React.FC = () => {
       .from('pc_sessions')
       .select('*, transactions(customer_name)')
       .eq('status', 'active');
-    const base: PcSession[] = [1,2,3,4].map(n => ({ pcNumber: n, status: 'available' }));
+    const base: PcSession[] = [1, 2, 3, 4, 5, 6].map(n => ({ pcNumber: n, status: 'available' }));
     if (data) {
       const now = Date.now();
       data.forEach((s: any) => {
@@ -312,7 +359,7 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const fetchTransactions = useCallback(async () => {
-    const today = new Date(); today.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
     const { data } = await supabase
       .from('transactions')
       .select('*, transaction_items(product_id, products(category))')
@@ -341,13 +388,13 @@ const AdminDashboard: React.FC = () => {
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [fetchPcSessions, fetchStocks, fetchTransactions]);
-  
+
   // TTS Queue Management
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const speechQueue = React.useRef<Array<{ 
-    text: string; 
-    pcNumber: number; 
-    second: number; 
+  const speechQueue = React.useRef<Array<{
+    text: string;
+    pcNumber: number;
+    second: number;
     type: 'countdown' | 'manual' | 'end';
   }>>([]);
   const spokenSecondsRef = React.useRef<Record<number, number>>({});
@@ -393,7 +440,7 @@ const AdminDashboard: React.FC = () => {
   const addToSpeechQueue = (text: string, pcNumber: number = 0, second: number = -1, type: 'countdown' | 'manual' | 'end' = 'manual') => {
     // Avoid duplicate countdowns for the same second
     const isDuplicate = speechQueue.current.some(m => m.pcNumber === pcNumber && m.second === second && m.type === type);
-    
+
     if (!isDuplicate) {
       speechQueue.current.push({ text, pcNumber, second, type });
       if (!window.speechSynthesis.speaking) {
@@ -408,21 +455,21 @@ const AdminDashboard: React.FC = () => {
     const timer = setInterval(() => {
       const now = Date.now();
       setCurrentTime(formatTime());
-      
+
       setPcs(prev => {
         const nextPcs = prev.map(pc => {
           if (pc.status === 'occupied' && pc.endTime) {
             const timeLeft = pc.endTime.getTime() - now;
             const currentSec = Math.ceil(timeLeft / 1000);
-            
+
             // Logic for 10s countdown to 0s
             if (currentSec <= 10 && currentSec >= 0) {
               if (spokenSecondsRef.current[pc.pcNumber] !== currentSec) {
                 spokenSecondsRef.current[pc.pcNumber] = currentSec;
-                
+
                 let msg = "";
                 let type: 'countdown' | 'end' = 'countdown';
-                
+
                 if (currentSec === 10) {
                   msg = `Mohon perhatian. Waktu untuk Kak ${pc.customerName} di PC ${pc.pcNumber} sepuluh detik lagi.`;
                 } else if (currentSec > 0) {
@@ -485,7 +532,7 @@ const AdminDashboard: React.FC = () => {
   const handleGameSubmit = async (data: any) => {
     setShowGameModal(false);
     const change = data.payMethod === 'cash' ? Math.max(0, data.cashReceived - data.totalPrice) : null;
-    
+
     // 1. Insert Transaction
     const { data: tx, error } = await supabase.from('transactions').insert({
       customer_name: data.name,
@@ -501,7 +548,7 @@ const AdminDashboard: React.FC = () => {
     // 2. Insert Game Item
     const { data: gameProducts } = await supabase.from('products').select('*').eq('category', 'game').eq('duration_minutes', data.duration).limit(1);
     const gameProduct = gameProducts?.[0];
-    
+
     if (gameProduct) {
       await supabase.from('transaction_items').insert({ transaction_id: tx.id, product_id: gameProduct.id, quantity: 1, subtotal: gameProduct.price });
     } else {
@@ -592,6 +639,9 @@ const AdminDashboard: React.FC = () => {
             <span className="clock-val">{currentTime}</span>
             <span className="clock-wib">WIB</span>
           </div>
+          <button className="reset-db-btn" onClick={() => setShowResetModal(true)}>
+            <Trash2 size={16} /> Reset
+          </button>
           <button className="logout-btn" onClick={async () => {
             await supabase.auth.signOut();
             navigate('/');
@@ -632,7 +682,7 @@ const AdminDashboard: React.FC = () => {
             {pcs.map((pc, i) => {
               const timeLeftVal = countdowns[i] ? parseInt(countdowns[i].split(':')[0]) * 60 + parseInt(countdowns[i].split(':')[1]) : -1;
               const isWarning = pc.status === 'occupied' && timeLeftVal <= 60 && timeLeftVal > 0;
-              
+
               return (
                 <div key={pc.pcNumber} className={`pc-monitor-card ${pc.status === 'available' ? 'mon-available' : isWarning ? 'mon-warning' : 'mon-occupied'}`}>
                   <div className="mon-header">
@@ -698,6 +748,50 @@ const AdminDashboard: React.FC = () => {
 
       {showGameModal && <GameModal pcs={pcs} stocks={stocks} onClose={() => setShowGameModal(false)} onSubmit={handleGameSubmit} />}
       {showCookieModal && <CookieModal stocks={stocks} onClose={() => setShowCookieModal(false)} onSubmit={handleCookieSubmit} />}
+
+      {/* Reset Database Modal */}
+      {showResetModal && (
+        <div className="modal-overlay" onClick={() => !isResetting && setShowResetModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="modal glass danger-modal"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 className="danger-text"><Trash2 size={22} /> Reset Database Transaksi</h2>
+              <button className="modal-close" onClick={() => setShowResetModal(false)}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleResetDatabase} className="modal-body">
+              <p className="danger-warning">
+                <strong>PERHATIAN!</strong> Tindakan ini akan menghapus semua riwayat transaksi,
+                item transaksi, dan sesi PC secara permanen. Data stok cookies tidak akan berubah.
+              </p>
+              <div className="form-group">
+                <label>Masukkan PIN Konfirmasi</label>
+                <input
+                  type="password"
+                  value={resetPin}
+                  onChange={e => setResetPin(e.target.value)}
+                  placeholder="••••••"
+                  autoFocus
+                  maxLength={6}
+                  className="pin-input-field"
+                />
+                {resetError && <p className="error-text">PIN salah! Silakan coba lagi.</p>}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="cancel-btn" onClick={() => setShowResetModal(false)} disabled={isResetting}>
+                  Batal
+                </button>
+                <button type="submit" className="confirm-reset-btn" disabled={isResetting || resetPin.length < 6}>
+                  {isResetting ? 'Sedang Menghapus...' : 'Ya, Reset Sekarang'}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };

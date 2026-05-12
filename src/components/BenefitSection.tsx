@@ -13,7 +13,7 @@ const benefits = [
   {
     icon: <Zap size={28} />,
     title: 'PC Performa Tinggi',
-    desc: '4 unit PC/Laptop siap tempur dengan spesifikasi mumpuni.',
+    desc: '6 unit PC/Laptop siap tempur dengan spesifikasi mumpuni.',
     color: 'cyan',
   },
   {
