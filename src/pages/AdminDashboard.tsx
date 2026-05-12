@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  Gamepad2, Cookie, DollarSign, ShoppingCart, Monitor,
+  Gamepad2, Cookie, DollarSign, Monitor,
   Clock, LogOut, Package, Plus, Minus, CheckCircle, X,
   CreditCard, Banknote, CalendarDays, Volume2, Trash2, FileDown
 } from 'lucide-react';
@@ -426,7 +426,7 @@ const AdminDashboard: React.FC = () => {
   const fetchTransactions = useCallback(async () => {
     const { data } = await supabase
       .from('transactions')
-      .select('*, transaction_items(product_id, products(category))')
+      .select('*, transaction_items(subtotal, products(category))')
       .order('created_at', { ascending: false });
     if (data) {
       setTransactions(data.map((t: any) => {
@@ -588,14 +588,18 @@ const AdminDashboard: React.FC = () => {
   const totalCookies = transactions.filter(t => t.type === 'cookie' || t.type === 'package').length;
   const totalGameSessions = transactions.filter(t => t.type === 'game' || t.type === 'package').length;
 
-  // New Detailed Stats
+  // New Detailed Stats (Summing directly from transaction items)
   const revenueCookies = transactions.reduce((acc, t) => {
-    const cookiePart = (t.items || []).filter(i => i.category === 'cookie').reduce((s, i) => s + i.subtotal, 0);
+    const cookiePart = (t.items || [])
+      .filter(i => i.category === 'cookie')
+      .reduce((s, i) => s + i.subtotal, 0);
     return acc + cookiePart;
   }, 0);
 
   const revenueGames = transactions.reduce((acc, t) => {
-    const gamePart = (t.items || []).filter(i => i.category === 'game' || i.category === 'package').reduce((s, i) => s + i.subtotal, 0);
+    const gamePart = (t.items || [])
+      .filter(i => i.category === 'game' || i.category === 'package')
+      .reduce((s, i) => s + i.subtotal, 0);
     return acc + gamePart;
   }, 0);
 
