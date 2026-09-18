@@ -23,7 +23,6 @@ Sistem ini memastikan antrean penggunaan PC tercatat rapi, tidak terjadi jadwal 
 * **Visualisasi Jadwal Booking**: Tampilan matriks jam interaktif per 15 menit agar calon pelanggan tahu jadwal kosong dan jam sibuk stand.
 
 ### 💼 2. Dashboard Admin & Kasir (POS)
-* **Akses Terproteksi**: Login rahasia (`/secret-login`) berbasis otentikasi Supabase.
 * **Ringkasan Keuangan (Real-Time Stats)**:
   * Total pendapatan (Rp).
   * Total cookies terjual (item).
